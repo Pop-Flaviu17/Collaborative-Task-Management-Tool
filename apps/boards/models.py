@@ -1,25 +1,45 @@
 from django.db import models
-from django.db import models
 from django.contrib.auth.models import User
 
-# Define the Board model
+
 class Board(models.Model):
-    name = models.CharField(max_length=100)  # Name of the board
-    description = models.TextField(blank=True, null=True)  # Description of the board
-    created_at = models.DateTimeField(auto_now_add=True)  # Created at timestamp
-    updated_at = models.DateTimeField(auto_now=True)  # Updated at timestamp
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='boards')  # Board owner (user)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)  # Description added
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='boards')
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.name
 
-class Column(models.Model):
-    name = models.CharField(max_length=100)  # Name of the column (e.g., "To-Do", "In Progress")
-    board = models.ForeignKey(Board, related_name='columns', on_delete=models.CASCADE)  # The board to which the column belongs
-    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp when the column was created
-    updated_at = models.DateTimeField(auto_now=True)  # Timestamp when the column was last updated
 
-    def _str_(self):
+class List(models.Model):
+    name = models.CharField(max_length=255)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='lists')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.board.name}"
+
+
+class Card(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='cards')
+    due_date = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
         return self.name
+        # Card statuses (To-Do, In Progress, Done)
 
-# Create your models here.
+    STATUS_CHOICES = [
+        ('todo', 'To-Do'),
+        ('in_progress', 'In Progress'),
+        ('done', 'Done'),
+    ]
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default='todo',  # Default status is 'To-Do'
+    )  # Adding task status with a default of "To-Do"
+

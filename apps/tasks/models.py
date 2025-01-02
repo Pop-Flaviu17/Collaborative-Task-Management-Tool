@@ -1,27 +1,16 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 # Define the Task model
+class Board(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 class Task(models.Model):
-    title = models.CharField(max_length=200)  # Title of the task
-    description = models.TextField(blank=True, null=True)  # Task description
-    due_date = models.DateTimeField(blank=True, null=True)  # Due date (optional)
-    created_at = models.DateTimeField(auto_now_add=True)  # Created at timestamp
-    updated_at = models.DateTimeField(auto_now=True)  # Updated at timestamp
-    board = models.ForeignKey('Board', related_name='tasks', on_delete=models.CASCADE)  # Board the task belongs to
-    assigned_to = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # Task assignee
+    assigned_to = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL)
+    board = models.ForeignKey(Board, null=True, blank=True, on_delete=models.SET_NULL)  # Fix this line if Board model exists
 
-    # Task statuses (To-Do, In Progress, Done)
-    STATUS_CHOICES = [
-        ('todo', 'To-Do'),
-        ('in_progress', 'In Progress'),
-        ('done', 'Done'),
-    ]
-    status = models.CharField(
-        max_length=50,
-        choices=STATUS_CHOICES,
-        default='todo',  # Default status is 'To-Do'
-    )  # Adding task status with a default of "To-Do"
-
-    def _str_(self):
-        return self.title
 
