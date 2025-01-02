@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'apps.activities',
     'apps.boards',
     'django_celery_beat',
+    'django_extensions',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
