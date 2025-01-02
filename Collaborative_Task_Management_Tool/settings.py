@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Collaborative_Task_Management_Tool',
+    'apps.tasks',
+    'apps.users',
+    'apps.activities',
+    'apps.boards',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
